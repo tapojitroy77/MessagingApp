@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "7bc43e80-29e0-48d8-b1fe-ff3f0e60ce05": {
+      "ProjectGuid": "7bc43e80-29e0-48d8-b1fe-ff3f0e60ce05",
+      "DisplayName": "ChatApplication",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "b0294ef9-9ded-4f4d-b6d0-9f807fcc2008": {
+      "ProjectGuid": "b0294ef9-9ded-4f4d-b6d0-9f807fcc2008",
+      "DisplayName": "docker-compose",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}

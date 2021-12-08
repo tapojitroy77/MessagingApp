@@ -1,0 +1,36 @@
+services:
+  chatapplication:
+    build:
+      context: E:\ChatApplication
+      dockerfile: ChatApplication/Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: ChatApplication
+      target: base
+    container_name: ChatApplication
+    entrypoint: tail -f /dev/null
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      NUGET_FALLBACK_PACKAGES: /root/.nuget/fallbackpackages
+    image: chatapplication:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages
+        --additionalProbingPath /root/.nuget/fallbackpackages  "/app/bin/Debug/net6.0/ChatApplication.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof
+        dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
+    ports:
+    - target: 80
+    tty: true
+    volumes:
+    - E:\ChatApplication\ChatApplication:/app:rw
+    - C:\Users\adminuser.L000538.004\vsdbg\vs2017u5:/remote_debugger:rw
+    - C:\Users\adminuser.L000538.004\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\adminuser.L000538.004\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+    - C:\Program Files\dotnet\sdk\NuGetFallbackFolder:/root/.nuget/fallbackpackages:ro
+    - C:\Users\adminuser.L000538.004\.nuget\packages:/root/.nuget/packages:ro
+    - E:\ChatApplication:/src:rw
+version: '3.4'

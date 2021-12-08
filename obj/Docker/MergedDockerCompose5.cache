@@ -1,0 +1,13 @@
+services:
+  chatapplication:
+    build:
+      context: E:\ChatApplication
+      dockerfile: ChatApplication/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    image: chatapplication
+    ports:
+    - target: 80
+    - published: 5001
+      target: 18942
+version: '3.4'
