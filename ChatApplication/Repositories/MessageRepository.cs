@@ -13,9 +13,13 @@ namespace ChatApplication.Repositories
             this.channelRepository = channelRepository;
             this.userRepository = userRepository;
         }
-        public List<Message> GetMessagesByChannel(string ChannelId)
+        public List<Message> GetMessagesByChannel(string Id)
         {
-            return messages.Where(message => message.Channel.ChannelId == ChannelId).ToList();
+            return messages.Where(message => message.Channel.ChannelId == Id).ToList();
+        }
+        public Message GetMessagesByMessageId(string MessageId)
+        {
+            return messages.Where(message => message.MessageId == MessageId).FirstOrDefault();
         }
         public Message CreateMessage(string MessageText, string UserEmail, string ChannelId)
         {

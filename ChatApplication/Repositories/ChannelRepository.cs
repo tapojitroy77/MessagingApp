@@ -6,10 +6,10 @@ namespace ChatApplication.Repositories
     {
         private static List<Channel> channels = new List<Channel>();
 
-        public Channel CreateChannel(string ChannelName)
+        public Channel CreateChannel(string Name)
         {
-            var channelId = Guid.NewGuid().ToString();
-            var channel = new Channel { ChannelId = channelId, ChannelName = ChannelName };
+            var Id = Guid.NewGuid().ToString();
+            var channel = new Channel { ChannelId = Id, Name = Name };
             channels.Add(channel);
             return channel;
         }
@@ -18,16 +18,16 @@ namespace ChatApplication.Repositories
             return channels;
         }
 
-        public Channel GetChannelById(string ChannelId)
+        public Channel GetChannelById(string Id)
         {
-            return channels.FirstOrDefault(channel => channel.ChannelId == ChannelId);
+            return channels.FirstOrDefault(channel => channel.ChannelId == Id);
         }
 
-        public bool DeleteChannel(string ChannelId)
+        public bool DeleteChannel(string Id)
         {
-            if (channels.Exists(channel => channel.ChannelId == ChannelId))
+            if (channels.Exists(channel => channel.ChannelId == Id))
             {
-                channels.RemoveAll(channel => channel.ChannelId == ChannelId);
+                channels.RemoveAll(channel => channel.ChannelId == Id);
                 return true;
             }
 

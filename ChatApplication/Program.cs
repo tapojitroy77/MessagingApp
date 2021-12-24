@@ -14,17 +14,24 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
-var app = builder.Build();
-app.MapHub<NotifyHubChannel>("/notifyChannel");
-app.MapHub<NotifyHubMessage>("/notifyMessage");
+builder.Services.AddCors(o => o.AddPolicy("CrosPolicy", builder =>
+{
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
+}));
 
-// Configure the HTTP request pipeline.
+var app = builder.Build();
+app.UseRouting();
+app.UseCors("CrosPolicy");
+app.MapHub<HubMessage>("/hubs/messages");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();

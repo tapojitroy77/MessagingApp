@@ -7,45 +7,42 @@ using Microsoft.AspNetCore.SignalR;
 namespace ChatApplication.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class ChannelController : ControllerBase
     {
         private IChannelRepository channelRepository;
-        private IHubContext<NotifyHubChannel, ITypedHubClient> hubContext;
+        private IHubContext<HubMessage, IHubMessageSubscribe> hubContext;
 
-        public ChannelController(IChannelRepository channelRepository, IHubContext<NotifyHubChannel, ITypedHubClient> hubContext)
+        public ChannelController(IChannelRepository channelRepository, IHubContext<HubMessage, IHubMessageSubscribe> hubContext)
         {
             this.channelRepository = channelRepository;
             this.hubContext = hubContext;
         }
 
-        [HttpGet("GetAllChannels")]
+        [HttpGet("channels")]
         public IEnumerable<Channel> GetAllChannels()
         {
             return this.channelRepository.GetAllChannels();
         }
 
-        [HttpGet("GetChannelById/{ChannelId}")]
-        public Channel GetChannelById(string ChannelId)
+        [HttpGet("channels/{Id}")]
+        public Channel GetChannelById(string Id)
         {
-            return this.channelRepository.GetChannelById(ChannelId);
+            return this.channelRepository.GetChannelById(Id);
         }
 
-        [HttpPost("CreateChannel")]
-        public Channel CreateChannel([FromBody] string ChannelName)
+        [HttpPost("channels")]
+        public Channel CreateChannel([FromBody] ChannelRequest channel)
         {
-            var channel = this.channelRepository.CreateChannel(ChannelName);
-            if (channel != null)
-            {
-                this.hubContext.Clients.All.BroadCastChannel(channel);
-            }
-            return channel;
+            var createdChannel = this.channelRepository.CreateChannel(channel.Name);
+            return createdChannel;
         }
 
-        [HttpPut("DeleteChannel/{ChannelId}")]
-        public bool DeleteChannel(string ChannelId)
+        [HttpDelete("channels/{Id}")]
+        public bool DeleteChannel(string Id)
         {
-            return this.channelRepository.DeleteChannel(ChannelId);
+            var isChannelDeleted = this.channelRepository.DeleteChannel(Id);
+            this.hubContext.Clients.Group(Id).channelDeleted();
+            return isChannelDeleted;
         }
     }
-}
+} 

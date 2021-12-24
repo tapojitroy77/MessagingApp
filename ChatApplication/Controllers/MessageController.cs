@@ -11,18 +11,18 @@ namespace ChatApplication.Controllers
     public class MessageController : ControllerBase
     {
         private IMessageRepository messageRepository;
-        private IHubContext<NotifyHubMessage, ITypedHubClient> hubContext;
+        private IHubContext<HubMessage, IHubMessageSubscribe> hubContext;
 
-        public MessageController(IMessageRepository messageRepository, IHubContext<NotifyHubMessage, ITypedHubClient> hubContext)
+        public MessageController(IMessageRepository messageRepository, IHubContext<HubMessage, IHubMessageSubscribe> hubContext)
         {
             this.messageRepository = messageRepository;
             this.hubContext = hubContext;
         }
 
-        [HttpGet("GetMessagesByChannel/{ChannelId}")]
-        public List<Message> GetMessagesByChannel(string ChannelId)
+        [HttpGet("GetMessagesByChannel/{Id}")]
+        public List<Message> GetMessagesByChannel(string Id)
         {
-            return this.messageRepository.GetMessagesByChannel(ChannelId);
+            return this.messageRepository.GetMessagesByChannel(Id);
         }
 
         [HttpPost("CreateMessage")]
@@ -31,7 +31,7 @@ namespace ChatApplication.Controllers
             var message = this.messageRepository.CreateMessage(CreateMessage.MessageText, CreateMessage.UserEmail, CreateMessage.ChannelId);
             if (message != null)
             {
-                this.hubContext.Clients.All.BroadCastMessage(message);
+                this.hubContext.Clients.Group(CreateMessage.ChannelId).messageAdded(message);
             }
             return message;
         }
@@ -39,7 +39,13 @@ namespace ChatApplication.Controllers
         [HttpPut("DeleteMessage/{MessageId}")]
         public bool DeleteChannel(string MessageId)
         {
-            return this.messageRepository.DeleteMessage(MessageId);
+            var message = this.messageRepository.GetMessagesByMessageId(MessageId);
+            var isMessageDeleted = this.messageRepository.DeleteMessage(MessageId);
+            if (message!= null && isMessageDeleted)
+            {
+                this.hubContext.Clients.Group(message.Channel.ChannelId).messageDeleted(message);
+            }
+            return isMessageDeleted;
         }
     }
 }
